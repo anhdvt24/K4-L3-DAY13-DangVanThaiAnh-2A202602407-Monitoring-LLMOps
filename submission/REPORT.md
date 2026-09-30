@@ -7,7 +7,7 @@
 - **Họ và tên:** Đặng Văn Thái Anh
 - **MSSV:** 2A202602407
 - **Lớp:** K4-L3B
-- **Commit SHA cuối:** `c722761e5dca1a584d2458a25ba121ebd2095f31` (HEAD of `main`, 2026-09-30T23:43+07:00 — push lên GitHub thành công)
+- **Commit SHA cuối:** `de4b5dde688e1fa2551e93415673f77c57c8dad4` (HEAD of `main`, push #3 thành công lên GitHub lúc 2026-09-30 23:43+07:00)
 - **Repository URL:** https://github.com/anhdvt24/K4-L3-DAY13-DangVanThaiAnh-2A202602407-Monitoring-LLMOps.git
 - **Challenge ID:** `day13-k4-l3b-monitoring-llmops-v1`
 - **Tên project Langfuse cá nhân:** `day13-k4-l3b-2A202602407`
