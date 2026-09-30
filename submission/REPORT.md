@@ -7,8 +7,8 @@
 - **Họ và tên:** Đặng Văn Thái Anh
 - **MSSV:** 2A202602407
 - **Lớp:** K4-L3B
+- **Commit SHA cuối:** `3532ed55b70c4ea1e14c90376ce4b64fce54aac3` (commit `Day 13: complete CP1-CP4 + challenge`, 2026-09-30T23:41:58+07:00)
 - **Repository URL:** https://github.com/anhdvt24/K4-L3-DAY13-DangVanThaiAnh-2A202602407-Monitoring-LLMOps.git
-- **Commit SHA cuối:** _(cập nhật sau khi push — chạy `git rev-parse HEAD` tại thư mục repo)_
 - **Challenge ID:** `day13-k4-l3b-monitoring-llmops-v1`
 - **Tên project Langfuse cá nhân:** `day13-k4-l3b-2A202602407`
 
@@ -296,8 +296,8 @@ Verify: `curl http://127.0.0.1:8000/health` → `incidents.rag_slow: false`. Req
 - [x] Evidence 06–10: ảnh Langfuse UI đã chụp (xem §10 hướng dẫn).
 - [x] Evidence 12–14: incident challenge đã điều tra xong (xem §7).
 - [x] Mọi ảnh dùng đường dẫn tương đối và mở được.
-- [ ] `.env`, secret, `.venv/`, `config/challenge.json` đã nằm trong `.gitignore` (KHÔNG push).
-- [ ] URL repo cá nhân + commit SHA cuối đã nộp trên LMS/Codelabs trước deadline 23:59:59.
+- [x] `.env`, secret, `.venv/`, `config/challenge.json` đã nằm trong `.gitignore` (KHÔNG push).
+- [x] URL repo cá nhân + commit SHA cuối đã nộp trên LMS/Codelabs trước deadline 23:59:59.
 
 ## 10. Hướng dẫn chụp evidence Langfuse (06–10)
 
