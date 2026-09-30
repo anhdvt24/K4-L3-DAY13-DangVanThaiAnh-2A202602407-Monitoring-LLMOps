@@ -1,0 +1,71 @@
+# Evidence: 13-incident-log
+# Generated: 2026-09-30T10:31:44Z
+# Working dir: C:\Users\Thai Anh\Desktop\VinAi\K4-L3-DAY13-DangVanThaiAnh-2A202602407-Monitoring-LLMOps
+# Challenge: day13-k4-l3b-monitoring-llmops-v1 (cohort=K4, incident=rag_slow, threshold=2000ms)
+# Nguồn: data/logs.jsonl, lọc các correlation_id của 5 query trong config/challenge.json
+
+# Chuỗi bằng chứng (metric → log → trace):
+# 1) Metric (evidence 12): panel-latency.png cho thấy 5 request gần nhất latency > 2000ms.
+# 2) Log: 5 dòng response_sent bên dưới đều có latency_ms > 2500ms, retrieval "thành công" (tool_success=true),
+#    TTFT 50ms (bình thường). Điều này đặt nghi vấn vào span retrieval, không phải generation.
+# 3) Trace (evidence 14): trace cùng correlation_id cho thấy retrieval span chiếm ~2500ms.
+
+# Lấy 1 request đại diện (chọn correlation_id đầu tiên):
+CORRELATION_ID = req-adc0c7e183af4323   # session=k4-l3b-challenge-s05
+
+# --- log record: request_received ---
+{
+  "service": "api",
+  "payload": {
+    "message_preview": "Describe how to prove a slow span is the root cause."
+  },
+  "event": "request_received",
+  "env": "dev",
+  "correlation_id": "req-adc0c7e183af4323",
+  "session_id": "k4-l3b-challenge-s05",
+  "feature": "monitoring",
+  "model": "fake-llm",
+  "user_id_hash": "68e37dc7cb5e",
+  "level": "info",
+  "ts": "2026-09-30T10:31:44.933201Z"
+}
+
+# --- log record: response_sent ---
+{
+  "service": "api",
+  "latency_ms": 2652,
+  "ttft_ms": 50,
+  "tokens_in": 22,
+  "tokens_out": 84,
+  "cost_usd": 0.001326,
+  "quality_score": 0.8,
+  "tool_name": "retrieval",
+  "tool_success": true,
+  "payload": {
+    "answer_preview": "Starter answer. You should improve this output logic and add better quality checks."
+  },
+  "event": "response_sent",
+  "env": "dev",
+  "correlation_id": "req-adc0c7e183af4323",
+  "session_id": "k4-l3b-challenge-s05",
+  "feature": "monitoring",
+  "model": "fake-llm",
+  "user_id_hash": "68e37dc7cb5e",
+  "level": "info",
+  "ts": "2026-09-30T10:31:47.585719Z"
+}
+
+# --- Summary table: 5 challenge requests ---
+# correlation_id               | session                  | latency_ms | ttft_ms | tool_success
+# req-2fc6e2764ce6a086         | k4-l3b-challenge-s03     | 2658       | 50      | true
+# req-3f70e31c522789ec         | k4-l3b-challenge-s02     | 2651       | 50      | true
+# req-bb420bb0813c1fb5         | k4-l3b-challenge-s01     | 2652       | 50      | true
+# req-6f186ea1719326b9         | k4-l3b-challenge-s04     | 2651       | 50      | true
+# req-adc0c7e183af4323         | k4-l3b-challenge-s05     | 2652       | 50      | true
+#
+# Nhận xét:
+# - Tất cả 5 request latency > 2000ms (vượt threshold trong challenge.json).
+# - tool_success=true → retrieval không "fail", chỉ CHẬM.
+# - TTFT 50ms (ổn định) → LLM/TTFT không phải nguyên nhân.
+
+# End of evidence

@@ -1,0 +1,7 @@
+{"label": "candidate", "correlation_id": "req-c25bb8b705990493", "session_id": "candidate-session-00", "ts": 1790757624.0298061}
+{"label": "candidate", "correlation_id": "req-3e33fa7e549acb95", "session_id": "candidate-session-01", "ts": 1790757630.4885159}
+{"label": "candidate", "correlation_id": "req-e87763ad63c504cc", "session_id": "candidate-session-02", "ts": 1790757636.9884725}
+{"label": "candidate", "correlation_id": "req-2f99fca697cd63d4", "session_id": "candidate-session-03", "ts": 1790757643.4414473}
+{"label": "candidate", "correlation_id": "req-3479a1da662f40f5", "session_id": "candidate-session-04", "ts": 1790757649.8857493}
+{"trace_id": "0bd0d8c8596aeffc7c3df4561fa8bf12", "session_id": "verify-candidate-live-01", "correlation_id": "req-adcb11e4122beb1b", "label": "candidate", "prompt_version": 2, "prompt_source": "langfuse", "ts": 1790762111.1614728, "note": "Live verification after clean restart with LANGFUSE_PROMPT_LABEL=candidate. Original candidate-session-* runs hit SDK cache (60s) after multiple restarts and fell back to local-v1."}
+{"trace_id": "0bd0d8c8596aeffc7c3df4561fa8bf12", "session_id": "verify-candidate-live-01", "correlation_id": "req-adcb11e4122beb1b", "label": "candidate", "prompt_version": 2, "prompt_source": "langfuse", "ts": 1790762217.644094, "note": "Live verification after clean restart with LANGFUSE_PROMPT_LABEL=candidate. Original candidate-session-* runs hit SDK cache (60s) after multiple restarts and fell back to local-v1."}

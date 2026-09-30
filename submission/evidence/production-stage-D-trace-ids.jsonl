@@ -1,0 +1,6 @@
+{"stage": "D", "label": "production", "correlation_id": "req-6e3cdc43bab8fac8", "session_id": "rb-after-rollback-00", "ts": 1790758040.6896381}
+{"stage": "D", "label": "production", "correlation_id": "req-45f1c959dbe17a92", "session_id": "rb-after-rollback-01", "ts": 1790758044.1368833}
+{"stage": "D", "label": "production", "correlation_id": "req-af1c5b8c4f59264e", "session_id": "rb-after-rollback-02", "ts": 1790758045.063686}
+{"stage": "D", "label": "production", "correlation_id": "req-2603512285f43c96", "session_id": "rb-after-rollback-03", "ts": 1790758045.5082827}
+{"stage": "D", "label": "production", "correlation_id": "req-595dd2e96d617a91", "session_id": "rb-after-rollback-04", "ts": 1790758045.926376}
+{"trace_id": "3d323baea7efd6e98178553b978baf7a", "session_id": "verify-production-live-01", "correlation_id": "req-bd97f0df1b4640ad", "label": "production", "prompt_version": 1, "prompt_source": "langfuse", "ts": 1790762217.644094, "note": "Live verification after clean restart with LANGFUSE_PROMPT_LABEL=production (post-rollback state). Confirms production label now points to v1."}

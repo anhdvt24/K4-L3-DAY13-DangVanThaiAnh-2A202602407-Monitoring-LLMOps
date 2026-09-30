@@ -1,0 +1,4 @@
+# Dashboard runtime — cài riêng vào venv riêng để tránh hạ phiên bản thư viện API.
+# Lab venv không cần những package này; chúng chỉ phục vụ việc xuất ảnh dashboard.
+matplotlib>=3.8
+Pillow>=10.0

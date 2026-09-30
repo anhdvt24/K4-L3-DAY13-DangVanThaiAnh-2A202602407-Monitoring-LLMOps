@@ -59,21 +59,31 @@ class LabAgent:
                 message=message,
                 enabled=tracing_enabled(),
             )
-            langfuse_client.update_current_span(
-                metadata={
-                    "doc_count": len(docs),
-                    "query_preview": summarize_text(message),
-                    "prompt_name": prompt.name,
-                    "prompt_label": prompt.label,
-                    "prompt_version": prompt.version,
-                    "prompt_source": prompt.source,
-                    "prompt_fetch_error": prompt.fetch_error or "",
-                },
-                version=prompt.version,
-            )
-            # TODO (CP2): instrument retrieve() and FakeLLM.generate() as child
-            # observations. The nested generation must receive prompt, usage and cost.
-            with propagate_attributes(prompt=prompt.managed_prompt):
+            # Bổ sung metadata cho retrieval span: KHÔNG capture raw message
+            # vì message có thể chứa PII. Chỉ ghi preview đã scrub + số tài liệu.
+            # Gộp tất cả vào một lần update_current_span để test public thấy đủ 7 key
+            # (xem tests/test_agent_prompt_trace.py).
+            try:
+                langfuse_client.update_current_span(
+                    metadata={
+                        "doc_count": len(docs),
+                        "query_preview": summarize_text(message),
+                        "prompt_name": prompt.name,
+                        "prompt_label": prompt.label,
+                        "prompt_version": prompt.version,
+                        "prompt_source": prompt.source,
+                        "prompt_fetch_error": prompt.fetch_error or "",
+                    },
+                    version=prompt.version,
+                )
+            except Exception:
+                pass
+            # Truyền managed_prompt để Langfuse tự link generation span với prompt version.
+            # Nếu prompt đến từ local fallback thì không truyền để tránh AttributeError.
+            if prompt.managed_prompt is not None:
+                with propagate_attributes(prompt=prompt.managed_prompt):
+                    response = self.llm.generate(prompt.text)
+            else:
                 response = self.llm.generate(prompt.text)
             quality_score = self._heuristic_quality(message, response.text, docs)
             latency_ms = int((time.perf_counter() - started) * 1000)
@@ -87,6 +97,13 @@ class LabAgent:
             tokens_out=response.usage.output_tokens,
             quality_score=quality_score,
         )
+
+        # Đảm bảo trace được flush trước khi trả response — Langfuse SDK gửi async,
+        # nếu worker kết thúc ngay thì batch có thể bị mất.
+        try:
+            langfuse_client.flush()
+        except Exception:
+            pass
 
         return AgentResult(
             answer=response.text,

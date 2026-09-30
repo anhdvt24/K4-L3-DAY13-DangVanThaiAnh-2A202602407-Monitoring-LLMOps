@@ -1,25 +1,45 @@
 alerts:
-  - name: TODO_alert_1
-    severity: TODO
-    condition: TODO
-    duration: TODO
+  # Alert 1: Latency cao — symptom-based, dựa trên panel latency.
+  - name: HighLatencyP95
+    severity: warning
     type: symptom-based
+    condition: 'p95(latency_ms) over 5m > 3000'
+    duration: 5m
+    threshold_value: 3000
+    threshold_unit: ms
+    sli: latency_p95
+    slo: fast_successful_requests
     channel: slack
-    owner: TODO
-    runbook: docs/alerts.md#alert-1
-  - name: TODO_alert_2
-    severity: TODO
-    condition: TODO
-    duration: TODO
+    slack_channel: "#k4-l3b-alerts"
+    owner: student-2A202602407
+    runbook: docs/alerts.md#alert-1-high-latency-p95
+
+  # Alert 2: Retrieval success giảm — bám guardrail retrieval_success_rate_pct_min.
+  - name: RetrievalSuccessDrop
+    severity: warning
     type: symptom-based
+    condition: 'retrieval_success_rate_pct over 10m < 90'
+    duration: 10m
+    threshold_value: 90
+    threshold_unit: percent
+    sli: retrieval_success_rate_pct
+    slo: fast_successful_requests
     channel: slack
-    owner: TODO
-    runbook: docs/alerts.md#alert-2
-  - name: TODO_alert_3
-    severity: TODO
-    condition: TODO
-    duration: TODO
+    slack_channel: "#k4-l3b-alerts"
+    owner: student-2A202602407
+    runbook: docs/alerts.md#alert-2-retrieval-success-drop
+
+  # Alert 3: Chi phí tăng bất thường — symptom-based, dựa trên panel cost.
+  - name: CostSpike
+    severity: critical
     type: symptom-based
+    condition: 'sum(cost_usd) over 15m > 2.5'
+    duration: 15m
+    threshold_value: 2.5
+    threshold_unit: usd
+    sli: cost_total_usd
+    slo: cost_guardrail
     channel: slack
-    owner: TODO
-    runbook: docs/alerts.md#alert-3
+    slack_channel: "#k4-l3b-alerts"
+    owner: student-2A202602407
+    runbook: docs/alerts.md#alert-3-cost-spike

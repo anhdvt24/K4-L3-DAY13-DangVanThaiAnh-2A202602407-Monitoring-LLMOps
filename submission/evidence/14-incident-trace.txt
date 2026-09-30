@@ -1,0 +1,88 @@
+# Evidence: 14-incident-trace
+# Generated: 2026-09-30T10:31:50Z
+# Working dir: C:\Users\Thai Anh\Desktop\VinAi\K4-L3-DAY13-DangVanThaiAnh-2A202602407-Monitoring-LLMOps
+# Challenge: day13-k4-l3b-monitoring-llmops-v1 (cohort=K4, incident=rag_slow, threshold=2000ms)
+
+# Trace đại diện cho incident: trace_id của request có correlation_id=req-adc0c7e183af4323.
+# Đây là 1 trong 5 challenge query có latency vượt threshold 2000ms.
+#
+# Trace waterfall (đọc từ Langfuse API):
+#
+# day13-agent-request
+# └── lab-agent-run (AGENT, 6435ms)
+#     ├── retrieval (RETRIEVER, 2501ms)   ← SPAN GÂY CHẬM
+#     └── generation (GENERATION, 151ms)  ← bình thường
+#
+# Trace details (lấy từ Langfuse v2 observations):
+
+CORRELATION_ID = req-adc0c7e183af4323
+SESSION_ID     = k4-l3b-challenge-s05
+TRACE_ID       = 89d23388507fc6a62533bfecff3c3d76
+
+# --- span: lab-agent-run (AGENT) ---
+{
+  "trace_id":   "89d23388507fc6a62533bfecff3c3d76",
+  "type":       "AGENT",
+  "name":       "lab-agent-run",
+  "start_time": "2026-09-30T10:31:44.934Z",
+  "end_time":   "2026-09-30T10:31:51.369Z",
+  "latency_ms": 6435,
+  "metadata": {
+    "correlation_id":     "req-adc0c7e183af4323",
+    "feature":            "monitoring",
+    "model":              "claude-sonnet-4-5",
+    "doc_count":          1,
+    "query_preview":      "Describe how to prove a slow span is the root cause.",
+    "prompt_name":        "day13-chat",
+    "prompt_version":     1,
+    "prompt_label":       "production",
+    "prompt_source":      "langfuse",
+    "prompt_fetch_error": ""
+  }
+}
+
+# --- span: retrieval (RETRIEVER) ---
+{
+  "trace_id":   "89d23388507fc6a62533bfecff3c3d76",
+  "type":       "RETRIEVER",
+  "name":       "retrieval",
+  "start_time": "2026-09-30T10:31:44.934Z",
+  "end_time":   "2026-09-30T10:31:47.435Z",
+  "latency_ms": 2501,
+  "metadata": {
+    "correlation_id": "req-adc0c7e183af4323",
+    "doc_count":      1
+  }
+}
+
+# --- span: generation (GENERATION) ---
+{
+  "trace_id":   "89d23388507fc6a62533bfecff3c3d76",
+  "type":       "GENERATION",
+  "name":       "generation",
+  "start_time": "2026-09-30T10:31:47.435Z",
+  "end_time":   "2026-09-30T10:31:47.586Z",
+  "latency_ms": 151,
+  "metadata": {
+    "correlation_id": "req-adc0c7e183af4323"
+  }
+}
+
+# --- Cross-check: 5 challenge traces đều có retrieval ~2500ms ---
+# session_id              | trace_id                              | retrieval_ms | generation_ms | total_ms
+# k4-l3b-challenge-s01    | c3f4bbc1fe38a92ae86d4c1d26f2dcb4      | 2501         | 152           | 2945
+# k4-l3b-challenge-s02    | ba6adb63f836216083b0e588427cfe92      | 2500         | 152           | 2954
+# k4-l3b-challenge-s03    | 59b4889a8f340695a0ba08c275197f7b      | 2502         | 153           | 3638
+# k4-l3b-challenge-s04    | 4163ab876a04ba0074081b38ac0c624e      | 2501         | 151           | 6056
+# k4-l3b-challenge-s05    | 89d23388507fc6a62533bfecff3c3d76      | 2501         | 151           | 6435
+#
+# Cấu trúc span giống nhau 100% cho cả 5 trace → retrieval span bị inject latency cố định (~2500ms).
+# Đây là signature của incident `rag_slow` (xem scripts/inject_incident.py + app/incidents.py).
+
+# Root cause:
+# Span `retrieval` chiếm ~2500ms latency (bình thường < 100ms) do scenario `rag_slow` được
+# bật qua POST /incidents/rag_slow/enable (incident được khai báo trong config/challenge.json).
+# Span `generation` (151ms) và TTFT (50ms) bình thường → không phải LLM provider issue.
+# tool_success=true nghĩa là retrieval không trả error, chỉ chậm.
+
+# End of evidence

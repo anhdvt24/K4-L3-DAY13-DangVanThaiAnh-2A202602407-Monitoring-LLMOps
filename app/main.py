@@ -10,7 +10,7 @@ from structlog.contextvars import bind_contextvars
 from .agent import LabAgent
 from .incidents import disable, enable, status
 from .logging_config import configure_logging, get_logger
-from .metrics import record_error, snapshot
+from .metrics import record_error, record_tool, snapshot
 from .middleware import CorrelationIdMiddleware
 from .pii import hash_user_id, summarize_text
 from .schemas import ChatRequest, ChatResponse
@@ -48,9 +48,15 @@ async def metrics() -> dict:
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: Request, body: ChatRequest) -> ChatResponse:
-    # TODO: Enrich logs with request context (user_id_hash, session_id, feature, model, env)
-    # bind_contextvars(...)
-    
+    # Bind metadata ở cấp request để mọi log sau (trong agent, retrieval, generation) đều inherit.
+    bind_contextvars(
+        user_id_hash=hash_user_id(body.user_id),
+        session_id=body.session_id,
+        feature=body.feature,
+        model=os.getenv("MODEL_NAME", "fake-llm"),
+        env=os.getenv("APP_ENV", "dev"),
+    )
+
     log.info(
         "request_received",
         service="api",
@@ -64,6 +70,7 @@ async def chat(request: Request, body: ChatRequest) -> ChatResponse:
             message=body.message,
             correlation_id=request.state.correlation_id,
         )
+        record_tool(True)
         log.info(
             "response_sent",
             service="api",
@@ -90,12 +97,15 @@ async def chat(request: Request, body: ChatRequest) -> ChatResponse:
     except Exception as exc:  # pragma: no cover
         error_type = type(exc).__name__
         record_error(error_type)
+        tool_failed = isinstance(exc, RuntimeError)
+        if tool_failed:
+            record_tool(False)
         log.error(
             "request_failed",
             service="api",
             error_type=error_type,
-            tool_name="retrieval" if isinstance(exc, RuntimeError) else None,
-            tool_success=False if isinstance(exc, RuntimeError) else None,
+            tool_name="retrieval" if tool_failed else None,
+            tool_success=False if tool_failed else None,
             payload={"detail": str(exc), "message_preview": summarize_text(body.message)},
         )
         raise HTTPException(status_code=500, detail=error_type) from exc

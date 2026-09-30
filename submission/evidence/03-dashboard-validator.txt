@@ -1,0 +1,11 @@
+# Evidence: 03-dashboard-validator
+# Generated: 2026-09-30T04:26:17Z
+# Working dir: C:\Users\Thai Anh\Desktop\VinAi\K4-L3-DAY13-DangVanThaiAnh-2A202602407-Monitoring-LLMOps
+# Python: C:\Users\Thai Anh\Desktop\VinAi\K4-L3-DAY13-DangVanThaiAnh-2A202602407-Monitoring-LLMOps\.venv\Scripts\python.exe
+
+# Command: C:\Users\Thai Anh\Desktop\VinAi\K4-L3-DAY13-DangVanThaiAnh-2A202602407-Monitoring-LLMOps\.venv\Scripts\python.exe scripts/validate_dashboard.py
+# Return code: 0
+
+HỢP LỆ: 6/6 panel có trong dashboard contract.
+
+# End of evidence
